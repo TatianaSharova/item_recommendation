@@ -2,7 +2,7 @@ import uuid
 
 from sqlalchemy import DateTime, ForeignKey, String, func
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Model(DeclarativeBase):
@@ -24,6 +24,13 @@ class User(UUIDModelBase):
     username: Mapped[str] = mapped_column(String(40), unique=True,
                                           nullable=False)
 
+    recommendations: Mapped[list['Recommendation']] = relationship(
+        lazy='selectin', back_populates='user', cascade='all, delete-orphan'
+    )
+    purchases: Mapped[list['UserPurchase']] = relationship(
+        lazy='selectin', back_populates='user', cascade='all, delete-orphan'
+    )
+
     def __repr__(self) -> str:
         return self.username
 
@@ -34,6 +41,13 @@ class Item(UUIDModelBase):
 
     name: Mapped[str] = mapped_column(String(40), nullable=False)
     category: Mapped[str] = mapped_column(String(40), nullable=False)
+
+    purchases: Mapped[list['UserPurchase']] = relationship(
+        lazy='selectin', back_populates='item', cascade='all, delete-orphan'
+    )
+    recommendations: Mapped[list['Recommendation']] = relationship(
+        lazy='selectin', back_populates='item', cascade='all, delete-orphan'
+    )
 
     def __repr__(self) -> str:
         return f'Товар {self.name} из категории {self.category}.'
@@ -47,6 +61,11 @@ class Recommendation(UUIDModelBase):
                                                      ondelete='CASCADE'))
     item_id: Mapped[UUID] = mapped_column(ForeignKey('item.id',
                                                      ondelete='CASCADE'))
+
+    user: Mapped['User'] = relationship(lazy='selectin',
+                                        back_populates='recommendations')
+    item: Mapped['Item'] = relationship(lazy='selectin',
+                                        back_populates='recommendations')
 
     def __repr__(self) -> str:
         return (f'Пользователю {self.user_id} '
@@ -64,6 +83,11 @@ class UserPurchase(UUIDModelBase):
     category: Mapped[str] = mapped_column(String(40), nullable=False)
     purchase_date: Mapped[DateTime] = mapped_column(DateTime,
                                                     default=func.now())
+
+    user: Mapped['User'] = relationship(lazy='selectin',
+                                        back_populates='purchases')
+    item: Mapped['Item'] = relationship(lazy='selectin',
+                                        back_populates='purchases')
 
     def __repr__(self) -> str:
         return f'{self.user_id} купил {self.item_id}'
