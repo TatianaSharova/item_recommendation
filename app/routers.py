@@ -1,11 +1,12 @@
 import uuid
 
-from app.db import get_db
 from fastapi import APIRouter, Depends, HTTPException, status
-from app.orm_query import (ItemRepository, PurchaseRepository, RecommendRepository,
-                       UserRepository)
-from app.schemas import ItemAdd, PurchaseAdd, RecommendationAdd, UserAdd
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db import get_db
+from app.orm_query import (ItemRepository, PurchaseRepository,
+                           RecommendRepository, UserRepository)
+from app.schemas import ItemAdd, PurchaseAdd, RecommendationAdd, UserAdd
 
 user_router = APIRouter(
     prefix='/users',
@@ -91,7 +92,7 @@ async def get_purchases(session: AsyncSession = Depends(get_db)):
     return {'data': purchases}
 
 
-@purchase_router.get('/{user_id}')
+@purchase_router.get('')
 async def get_user_purchases(user_id: str,
                              session: AsyncSession = Depends(get_db)):
     '''Просмотреть все покупки определенного пользователя.'''
