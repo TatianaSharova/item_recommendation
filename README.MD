@@ -193,7 +193,7 @@ Get http://127.0.0.1:8000/purchases/
 ```
 8. Просмотр покупок пользователя по user_id:
 ```
-Get http://127.0.0.1:8000/items/c8a37f4d-5c5a-417d-a870-f7f25e66136d/
+Get http://127.0.0.1:8000/purchases?user_id=c8a37f4d-5c5a-417d-a870-f7f25e66136d/
 ```
 Ответ:
 ```
