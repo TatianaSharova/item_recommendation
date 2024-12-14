@@ -246,7 +246,28 @@ GET http://127.0.0.1:8000/recommendations?user_id=be3c7469-8009-4b2b-9ce6-6daac0
 **Тестирование:**                                                 
 -----------
 Для тестов создается отдельная асинхронная база данных Sqlite.
-Для тестирования введите в командной строке команду из корня проекта:
+Для тестирования из корня проекта:
+1. Создайте и активируйте виртуальное окружение:
+
+Для Linux/macOS:
+```
+python3 -m venv venv
+```
+```
+source venv/bin/activate
+```
+Для Windows:
+```
+python -m venv venv
+```
+```
+source venv/Scripts/activate
+```
+2. Установите зависимости из файла requirements.txt:
+```
+pip install -r requirements.txt
+```
+3. Начните тестирование:
 ```
 pytest
 ```
