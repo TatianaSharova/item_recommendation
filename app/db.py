@@ -2,9 +2,10 @@ import os
 from typing import AsyncGenerator
 
 from dotenv import load_dotenv
-from app.models import Model
 from sqlalchemy.ext.asyncio import (AsyncSession, async_sessionmaker,
                                     create_async_engine)
+
+from app.models import Model
 
 load_dotenv()
 DB_USER = os.getenv('DB_USER')

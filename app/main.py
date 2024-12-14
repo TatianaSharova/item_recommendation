@@ -1,9 +1,10 @@
 from contextlib import asynccontextmanager
 
-from app.db import create_table, delete_tables
 from fastapi import FastAPI
-from app.routers import (gen_recommendation_router, item_router, purchase_router,
-                     recommendation_router, user_router)
+
+from app.db import create_table, delete_tables
+from app.routers import (gen_recommendation_router, item_router,
+                         purchase_router, recommendation_router, user_router)
 
 
 @asynccontextmanager

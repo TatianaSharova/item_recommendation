@@ -1,9 +1,10 @@
 import uuid
 
 import pandas as pd
-from app.models import UserPurchase
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models import UserPurchase
 
 
 async def find_similar_users_purchases(user_item_ids: list[uuid.UUID],
