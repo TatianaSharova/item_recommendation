@@ -2,12 +2,14 @@ import uuid
 from collections import Counter
 
 from fastapi import HTTPException
-from app.models import Item, Recommendation, User, UserPurchase
-from app.schemas import (ItemAdd, ItemRead, PurchaseAdd, PurchaseRead,
-                     RecommendationAdd, RecommendationRead, UserAdd, UserRead)
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.models import Item, Recommendation, User, UserPurchase
+from app.schemas import (ItemAdd, ItemRead, PurchaseAdd, PurchaseRead,
+                         RecommendationAdd, RecommendationRead, UserAdd,
+                         UserRead)
 from app.utils import get_purchases_dataframe
 
 
@@ -182,17 +184,21 @@ class RecommendRepository:
             df['item_id'].isin(usr_ps) & (df['user_id'] != str(exist_user.id))
         ]
         if similar_users.empty:
-            return ('Недостаточно данных для составления рекомендации: '
-                    'нет пользователей со схожими покупками.')
+            raise HTTPException(
+                status_code=400,
+                detail=('Недостаточно данных для составления рекомендации: '
+                        'нет пользователей со схожими покупками.'))
         similar_users = similar_users['user_id'].tolist()
 
         # Ищем покупки пользователей со схожим вкусом
         users_purchases = df[
             df['user_id'].isin(similar_users) & ~df['item_id'].isin(usr_ps)]
         if users_purchases.empty:
-            return ('Недостаточно данных для составления рекомендации: '
-                    'другие пользователи не покупали товары, не купленные'
-                    ' данным пользователем.')
+            raise HTTPException(
+                status_code=400,
+                detail=('Недостаточно данных для составления рекомендации: '
+                        'другие пользователи не покупали товары, не купленные'
+                        ' данным пользователем.'))
 
         # Подсчитываем популярность полученных товаров
         items = users_purchases['item_id'].tolist()
